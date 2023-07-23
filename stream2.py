@@ -1,8 +1,5 @@
 import streamlit as st
 import cv2
-import numpy as np
-from ultralytics import YOLO
-#model = YOLO(r"C:\Users\Lenovo\Desktop\kv\last (18).pt")
 cap = cv2.VideoCapture(0)
 st.title("in the name of god")
 st.header('test webcam')
