@@ -6,7 +6,7 @@ import time
 import cv2
 
 for i in range(0, 5):
-    cap = cv2.VideoCapture(i)
+    cap = cv2.VideoCapture(i,cv2.CAP_DSHOW)
     is_camera = cap.isOpened()
     if is_camera:
         print(f"Input {i} is a valid camera value for VIDEO_SOURCE")
