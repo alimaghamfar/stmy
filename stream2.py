@@ -1,14 +1,14 @@
-"""
-Check which inputs are a valid camera.
-"""
-import time
-
 import cv2
+import streamlit as st
 
-for i in range(0, 5):
-    cap = cv2.VideoCapture(i,cv2.CAP_DSHOW)
-    is_camera = cap.isOpened()
-    if is_camera:
-        print(f"Input {i} is a valid camera value for VIDEO_SOURCE")
-        cap.release()
-        time.sleep(5)
+st.title("Webcam Live Feed")
+run = st.checkbox('Run')
+FRAME_WINDOW = st.image([])
+camera = cv2.VideoCapture(0)
+
+while run:
+    _, frame = camera.read()
+    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    FRAME_WINDOW.image(frame)
+else:
+    st.write('Stopped')
