@@ -3,7 +3,8 @@ import streamlit as st
 
 st.title("Webcam Live Feed")
 run = st.checkbox('Run')
-FRAME_WINDOW = st.image([])
+#FRAME_WINDOW = st.image([])
+FRAME_WINDOW=st.empty()
 camera = cv2.VideoCapture(0)
 
 while run:
