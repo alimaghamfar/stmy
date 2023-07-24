@@ -1,6 +1,14 @@
-import streamlit as st
+"""
+Check which inputs are a valid camera.
+"""
+import time
 
-picture = st.camera_input("Take a picture")
+import cv2
 
-if picture:
-    st.image(picture)
+for i in range(0, 5):
+    cap = cv2.VideoCapture(i)
+    is_camera = cap.isOpened()
+    if is_camera:
+        print(f"Input {i} is a valid camera value for VIDEO_SOURCE")
+        cap.release()
+        time.sleep(5)
