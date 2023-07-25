@@ -15,7 +15,8 @@ img_container = {"img": None}
 
 def video_frame_callback(frame: av.VideoFrame) -> av.VideoFrame:
     img = frame.to_ndarray(format="bgr24")
-    cv2.rectangle(img,(315,10),(380,80),(0,210,0),2)
+    img = cv2.resize(img,None,fx=1/5, fy=1/5, interpolation = cv2.INTER_CUBIC)
+    cv2.rectangle(img,(15,10),(40,40),(0,210,0),2)
 
     #img=cv2.imread(frame)
     #img=cv2.cvtColor(img,cv2.COLOR_BGR2BGRA)
