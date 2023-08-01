@@ -1,35 +1,36 @@
 import threading
-import av
+
 import cv2
 import streamlit as st
+from matplotlib import pyplot as plt
 
-from streamlit_webrtc import (
-    RTCConfiguration,
-    WebRtcMode,
-    WebRtcStreamerContext,
-    webrtc_streamer,
-)
+from streamlit_webrtc import webrtc_streamer,RTCConfiguration
+
 lock = threading.Lock()
 img_container = {"img": None}
 
 
-def video_frame_callback(frame: av.VideoFrame) -> av.VideoFrame:
+def video_frame_callback(frame):
     img = frame.to_ndarray(format="bgr24")
-    img = cv2.resize(img,None,fx=1/5, fy=1/5, interpolation = cv2.INTER_CUBIC)
-    cv2.rectangle(img,(15,10),(20,40),(0,210,0),2)
+    with lock:
+        img_container["img"] = img
 
-    #img=cv2.imread(frame)
-    #img=cv2.cvtColor(img,cv2.COLOR_BGR2BGRA)
-    #with lock:
-       # img_container["img"] = img
-    return av.VideoFrame.from_ndarray(img, format="bgr24")
+    return frame
 
 
-webrtc_ctx=webrtc_streamer(
-            key="object-detection",
-            mode=WebRtcMode.SENDRECV,
-            #rtc_configuration=RTC_CONFIGURATION,
-            video_frame_callback=video_frame_callback,
-            media_stream_constraints={"video": True, "audio": False},
-            async_processing=False
-        )
+ctx = webrtc_streamer(key="example", video_frame_callback=video_frame_callback,rtc_configuration=RTCConfiguration(
+    {"iceServers":[{"urls": ["stun:stun.l.google.com:19302"]}]}
+))
+
+fig_place = st.empty()
+fig, ax = plt.subplots(1, 1)
+
+while ctx.state.playing:
+    with lock:
+        img = img_container["img"]
+    if img is None:
+        continue
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    ax.cla()
+    ax.hist(gray.ravel(), 256, [0, 256])
+    fig_place.pyplot(fig)
